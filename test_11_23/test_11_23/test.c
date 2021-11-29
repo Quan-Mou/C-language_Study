@@ -31,6 +31,40 @@ void print2(int(*arr)[5],int r,int c)
 		printf("\n");
 	}
 }
+
+void reverse(char * str,int sz)
+{
+	//1.
+	//int left = 0;
+	//int right = sz-1;
+	//char tmp = 0;
+	//while (left<right)
+	//{
+	//	tmp = str[left];
+	//	str[left] = str[right];
+	//	str[right] = tmp;
+	//	left++;
+	//	right--;
+	//}
+
+	//2.
+	char* left = str;
+	int len = strlen(str);
+	char* right = left + len - 1;
+	while (left<right)
+	{
+		char tmp = 0;
+		tmp = *left;
+		*left = *right;
+		*right = tmp;
+		left++;
+		right--;
+	}
+
+	
+
+	
+}
 int main()
 {
 	//指针的进阶
@@ -107,10 +141,20 @@ int main()
 	
 
 	//看下面代码的意思：
-	int arr[5];  // 整形数组里面有5个元素
-	int *parr1[10]; // 一个数组里面有10个元素，每个元素的类型是int指针
-	int(*parr2)[10]; // 数组指针：指针parr2指向一个数组，里面有10个元素，每个元素的类型是int  
-	int(*parr3[10])[5]; // 数组指针：parr3指针数组，该数组能够存放10个数组指针，每个数组指针指向一个数组，里面能存5个元素，每个元素是int型
+	//int arr[5];  // 整形数组里面有5个元素
+	//int *parr1[10]; // 一个数组里面有10个元素，每个元素的类型是int指针
+	//int(*parr2)[10]; // 数组指针：指针parr2指向一个数组，里面有10个元素，每个元素的类型是int  
+	//int(*parr3[10])[5]; // 数组指针：parr3指针数组，该数组能够存放10个数组指针，每个数组指针指向一个数组，里面能存5个元素，每个元素是int型
+
+	//逆序字符串
+
+	char str[] = "abcdef";
+	int sz = strlen(str);
+	
+	reverse(str,sz);
+	printf("%s", str);
+
+
 
 	return 0;
 }
