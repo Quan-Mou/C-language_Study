@@ -1,5 +1,3 @@
-注意C语言中的 "" 和 ''
-
 sizeof 是一个操作符 计算一个数或者类型所占用内存空间的大小, sizeof()单位是byte（字节）。
 
 strlen() 计算数组字符串的长度。
@@ -299,8 +297,8 @@ int main() {
   - 其他库函数
 - 如何学习库函数？
   -  www.cplusplus.com
-  - MSDN(Microsoft Developer Network)
-  - http://zh.cppreference.com
+  -  MSDN(Microsoft Developer Network)
+  -  http://zh.cppreference.com
 
 #### 自定义函数
 
@@ -538,9 +536,10 @@ int main() {
 ###### 函数声明
 
 1. 告诉编译器有一个函数叫什么，参数是什么，返回类型是什么。但是具体是不是存在，函数
-声明决定不了。
+   声明决定不了。
 2. 函数的声明一般出现在函数的使用之前。要满足先声明后使用。
 3. 函数的声明一般要放在头文件中的。
+
   - 比如我在一个sum.c文件，这个文件是放一个求和函数，我把这个函数定义放在个一个头文件中名为sum.h
   - sum.c是函数的定义（也就是是函数的实现），sum.h是这个函数的声明。
   - 我在test.c文件里要用这个函数的话需要引入它的头文件：`#include "sum.h"` 然后就可以使用这个函数了。
@@ -1806,10 +1805,10 @@ int main()
 
    - 调试（英语：Debugging / Debug），又称除错，是发现和减少计算机程序或电子仪器设备中程
      序错误的一个过程。
-     
+
    - 所有发生的事情都一定有迹可循，如果问心无愧，就不需要掩盖也就没有迹象了，如果问心有愧，就必然需要掩盖，那就一定会有迹象，迹象越多就越容易顺藤而上，这就是推理的途径。顺着这条途径顺流而下就是犯罪，逆流而上，就是真相。
 
-        一名优秀的程序员是一名出色的侦探。
+     一名优秀的程序员是一名出色的侦探。
 
 ##### 2.1调试的基本步骤
 
@@ -3193,11 +3192,13 @@ int is_string_rotate(char* str1, char* str2)
 
 
 
-### 字符串函数和字符函数使用及实现
+## 字符串函数和字符函数使用及实现
 
-#### strlen
+### strlen
 
 `size_t strlen(const char* string);`
+
+作用：求字符串长度
 
 - 字符串已经 '\0' 作为结束标志，strlen函数返回的是在字符串中 '\0' 前面出现的字符个数（不包
   含 '\0' )。
@@ -3205,16 +3206,673 @@ int is_string_rotate(char* str1, char* str2)
 - 注意函数的返回值为size_t，是无符号的（ 易错 ）
 - 模拟实现strlen函数
 
-#### strcpy
+### strcpy
 
 `char*strcpy(char* strDestination,const char* strSource);`
+
+作用：拷贝字符串
 
 - 将第二个参数字符串内容拷贝到第一个参数字符串里面
 - 源字符串必须以 '\0' 结束
 - 会将源字符串中的 '\0' 拷贝到目标空间
 - 目标空间必须足够大，以确保能存放源字符串
 - 目标空间必须可变
+- 返回值是拷贝后的首字符串地址
 - 学会模拟实现
 
+### strcat
 
+`char* strcat ( char* destination, const char* source);`
+
+作用：追加/拼接字符串
+
+- 源字符串必须以 '\0' 结束。
+- 目标空间必须有足够的大，能容纳下源字符串的内容。
+- 目标空间必须可修改。
+- 不可以自己给自己拼接字符串，如果要给自己拼接使用strncat()
+
+##### 模拟strcat
+
+~~~c
+//模拟实现strcat函数
+char* my_strcat(char* str1,char* str2)
+{
+	//1.
+	//char* des = str1;
+	//while (*str1)
+	//{
+	//	str1++;
+	//}
+	//while (*str2)
+	//{
+	//	*str1 = *str2;
+	//	str2++;
+	//	str1++;
+	//}
+	//*str1 = *str2;	
+	//return des;
+
+	char* des = str1;
+	while (*str1)
+	{
+		str1++;
+	}
+	while (*str1++ = *str2++)
+	{
+		;
+	}
+	return des;
+
+}
+int main()
+{
+	char destination[20] = "ABC ";
+	char source[] = "World";
+    //最后一个\0也要追加进去
+	my_strcat(destination, source);//返回值是拼接完成的首字符地址
+	printf("%s", destination);
+	return 0;
+}
+~~~
+
+### strcmp
+
+`int strcmp ( const char * str1, const char * str2 );`
+
+- This function starts comparing the first character of each string. If they are equal to each
+  other, it continues with the following pairs until the characters differ or until a terminating
+  null-character is reached.
+- 标准规定(返回值)：
+  - 第一个字符串大于第二个字符串，则返回大于0的数字
+  - 第一个字符串小于第二个字符串，则返回小于0的数字
+  - 第一个字符串等于第二个字符串，则返回等于0的数字
+
+##### 模拟实现strcmp
+
+~~~c
+//模拟实现strcmp
+int my_strcmp(char* str1,char* str2)
+{
+	
+	while (*str1 == *str2)
+	{
+		if (*str1 == '\0')
+		{
+			return 0;
+		}
+		str1++;
+		str2++;
+		if (*str1 > *str2)
+		{
+			return 1;
+		}
+		else if (*str1 < *str2)
+		{
+			return -1;
+		}
+	}
+
+}
+int main()
+{
+	char str1[] = "ABCD";
+	char str2[] = "ABCD";
+	int ret = my_strcmp(str1,str2);
+	if (ret > 0)
+	{
+		printf("str1 > str2\n");
+	}
+	else if(ret < 0)
+	{
+		printf("str1 < str2\n");
+	}
+	else {
+		printf("str1 == str2\n");
+	}
+	return 0;
+}
+
+~~~
+
+### strncpy
+
+第三个参数：表示要拷贝几个字符
+
+##### 模拟实现strncpy
+
+~~~c
+char* my_strncpy(char* dest, char* src,int k)
+{
+	char* des = dest;
+	while (k)
+	{
+		*dest = *src;
+		k--;
+		dest++;
+		src++;
+	}
+	*dest = '\0';
+	return des;
+}
+int main()
+{
+	char dest[20] = "ABC";
+	char src[] = "nihao";
+	my_strncpy(dest,src,5);
+	printf("%s", dest);
+	return 0;
+}
+
+~~~
+
+### strncat
+
+第三个参数：表示要拼接几个字符
+
+##### 模拟实现strncat
+
+### strncmp
+
+##### 模拟实现strncmp
+
+第三个参数：表示要比较几个字符
+
+strcpy、strcat、strcmp  ---- 长度不受限制的字符串函数
+
+strncpy、strncat、strncmp ---- 长度受限制的字符串函数
+
+受限制的字符串函数安全度相对高一些。
+
+### strstr
+
+`char * strstr ( const char * str1, const char * str2 );`
+
+作用：查找str1里面是否有str2
+
+- 如果有返回值是找的首元素地址，如果没找到返回一个空指针（NULL）
+
+##### 模拟strstr
+
+~~~c
+//模拟实现strstr
+char* my_strstr(str1,str2)
+{
+	//abccdef
+	//cde
+	char* s1 = NULL;
+	char* s2 = NULL;
+	char* cp = str1;
+	while (*cp)
+	{
+		s1 = cp;
+		s2 = str2;
+		while (*s1 == *s2)
+		{
+			s1++;
+			s2++;
+		}
+		if (*s2 == '\0')
+		{
+			return cp;
+		}
+		cp++;
+	}
+	return NULL;
+	
+}
+int main()
+{
+	//分析：
+	//1.返回值：找到了就返回找到的首元素地址，没找到返回一个空指针
+	//起始两个字符串的首个字符相比，如果他们相等，就同时+1。反之第一个参数+1
+	char str1[] = "abccdef";
+	char str2[] = "cde";
+	char* ret =  my_strstr(str1,str2);
+	printf("%s", ret);
+	return 0;
+}
+~~~
+
+### strtok
+
+`char * strtok ( char * str, const char * sep );`
+
+作用：分隔字符串
+
+- sep参数是个字符串，定义了用作分隔符的字符集合
+- 第一个参数指定一个字符串，它包含了0个或者多个由sep字符串中一个或者多个分隔符分割的标记。
+- strtok函数找到str中的下一个标记，并将其用 \0 结尾，返回一个指向这个标记的指针。（注：strtok函数会改变被操作的字符串，所以在使用strtok函数切分的字符串一般都是临时拷贝的内容并且可修改。）
+- strtok函数的第一个参数不为 NULL ，函数将找到str中第一个标记，strtok函数将保存它在字符串中的位置。
+- strtok函数的第一个参数为 NULL ，函数将在同一个字符串中被保存的位置开始，查找下一个标记。
+- 如果字符串中不存在更多的标记，则返回 NULL 指针。
+
+~~~c
+int main()
+{
+	// 192.168.3.155 - 以.分隔
+	char  str1[] = "192.168.3.155";
+	char* sep = ".";
+	// 返回找到的第一个标签，用\0 结尾，返回一个指向这个标记的指针
+	//char* ret = strtok(str1, sep);
+	char* ret = 0;
+	
+	for (ret = strtok(str1, sep); ret != NULL; ret = strtok(NULL, sep))
+	{
+		printf("%s\n", ret);
+	}
+	return 0;
+}
+~~~
+
+### strerror
+
+`char * strerror ( int errnum );`
+
+作用：捕捉库函数返回的错误码
+
+只要库函数调用失败了，就会把错误码放到全局的errno变量中，这个变量是C语言定义的全局变量。是int型。
+
+通过调用strerror(errno)，strerror就会把这个错误码转换成字符串首字符串信息并且返回。
+
+~~~c
+#include<errno.h>
+int main()
+{
+	//这个函数是文件函数，第一个参数是文件名，第二个参数是做什么操作，r是打开这个文件
+	FILE* fs = fopen("text.txt", "r");
+	if (fs == NULL)
+	{
+		//打开失败
+		//要使用errno需要引入对应的头文件
+		printf("%s", strerror(errno));
+	}
+    // 关闭文件
+    fclose(fs);
+    fs = NULL;
+	return 0;
+}
+~~~
+
+### perror
+
+`void perror ( const char * str );`
+
+作用：跟strerror一样，不同的是strerror是捕捉了错误信息，你可以选择打印或者不打印，而perror是直接就打印了，它的参数部分是自己自定义的一些信息。
+
+~~~c
+int main()
+{
+	// 返回一个FILE类型的指针
+	FILE * fs = fopen("test.txt", "r");
+	if (fs == NULL)
+	{
+		perror("fopen");
+	}
+
+	fclose(fs);
+	fs = NULL;
+	return 0;
+}
+~~~
+
+## 内存函数及实现
+
+### memcpy
+
+`void * memcpy ( void * destination, const void * source, size_t num );`
+
+作用：复制字节拷贝内容，之前学过strcpy，但是有个缺陷，就是只能拷贝字符串，如果是int型或者其它类型该怎么拷贝内容呢?所以就有了memcpy这个函数
+
+~~~c
+void * my_memcpy(void* dest,void* src,int num)
+{
+	assert(dest && src);
+	void* ret = dest;
+	while(num--){
+		*(char*)dest = *(char*)src;
+		dest = (char*)dest + 1;
+		src = (char*)src + 1;
+	}
+	return ret;
+}
+int main()
+{
+//	拷贝任何类型的数据 单位是字节 
+	int arr1[10] = {1,2,3,4,5,6,7,8,9,10};  
+// 					12123458910 正常情况下 
+	int arr2[10] = {0};
+//	memcpy(arr1,arr2,20);
+	
+//	模拟实现memcpy
+//	my_memcpy(arr1,arr2,20); 
+//	如果是这样拷贝就有会重叠了，如果有重叠的，C语言还有另外一种函数memmove() 
+//	my_memcpy(arr1+2,arr1,20); //12123458910 正常情况下 
+//	memmove(arr1+2,arr1,20);
+	memcpy(arr1+2,arr1,20);// 这个函数也可以实现， 
+	return 0;
+}
+~~~
+
+### memmove
+
+`void * memmove ( void * destination, const void * source, size_t num );`
+
+作用：跟memcpy一样，上面有例子，了解就行。
+
+##### 模拟memmove函数
+
+~~~c
+void* my_memmove(void* dest,void* src,size_t num)
+{
+	assert(dest && src);
+	void *ret = dest;
+	
+	if (dest < src)
+	{
+		while (num--)
+		{
+			*(char*)dest = *(char*)src;
+			dest = (char*)dest + 1;
+			src = (char*)src + 1;
+		}
+	}
+	else
+	{
+		while (num--)
+		{
+			*((char*)dest + num) = *((char*)src + num);
+		}
+	}
+	return ret;
+}
+int main()
+{
+	int arr[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+	
+	my_memmove(arr + 2,arr,20);
+	return 0;
+}
+~~~
+
+### momcmp
+
+`int memcmp ( const void * ptr1, const void * ptr2, size_t num );`
+
+作用：比较字节，返回值跟strcmp一样。第三个参数是比几个字节
+
+### memset
+
+以字节为单位设置内存。
+
+内存填充块将ptr指向的内存块的第一个num字节设置为指定的值(解释为unsigned char)。
+
+~~~c
+#include<stdio.h>
+
+int main()
+{
+	char str[] = "abc is change";
+	memset(str, '!', 3); // 将str元素，前三个字节设置为！
+	printf("%s", str);
+	return 0;
+}
+~~~
+
+
+
+# 自定义类型
+
+自定义类型包括结构体，枚举，联合体
+
+## 结构体类型
+
+结构体是一种集合，比如数组也是一种集合，它是一组相同类型的元素的集合。
+
+结构体描述对象，比如一本书，一个学生，它可以包含不同类型的元素。这些元素被称为成员、成员变量。
+
+### 结构体的声明
+
+~~~c
+#include<stdio.h>
+
+语法：
+struct tag {
+   member_list..
+}variable_list;
+
+
+struct S {
+	char name[20];
+	int age;
+}s1;  
+
+struct S 是一个结构体类型，s1是这个结构体的变量(称结构体变量)
+    
+struct S {
+	char name[20];
+	int age;
+}s1;
+
+int main()
+{
+	struct S s2; // 这种和上面的s1效果是一样的，唯一不同的是，s1是全局变量，s2是局部变量
+	return 0;
+}
+
+~~~
+
+### 结构体不完全声明
+
+~~~c
+// 匿名结构体声明
+//结构体不完全声明
+struct  {
+	char i;
+}a;
+
+struct {
+	char name[20];
+	char a;
+}*p;  
+
+//上面在声明的时候省略了结构体标签
+// 上面的结构体只能用一次，因为没有结构体标签，构不成一个类型，有自己的局限性
+int main()
+{
+	p = &a; // 这种方法可取吗?
+	//警告：编译器会把上面的两个声明当成完全不同的两个类型，所以是非法的。
+	return 0;
+}
+~~~
+
+### 结构体的变量和初始化
+
+~~~c
+struct b {
+	char id[10];
+	int age;
+};
+struct s{
+	char name[20];
+	int age;
+	char sex[4];
+	struct b b1;
+}stu3 = {"curry",32, '男'}; // 结构体变量初始化
+
+int main()
+{	
+	struct s stu1; // 定义结构体变量
+	struct s stu2 = { "权某人", 17, "男", {"C语言",190} }; //定义变量并初始化 
+	//可以通过.和-> 访问成员
+	
+	printf("%s %d %s %s %d", stu2.name, stu2.age, stu2.sex, stu2.b1.id, stu2.b1.age);
+    struct b b1 = {0} // 把第一个赋值为0 其他的默认为0  
+	return 0;
+}
+~~~
+
+### 结构体的自引用
+
+常用于描述数据结构中的链表
+
+在结构体内部包含自身类型结构体的指针
+
+在数据结构[数据在内存存储的结构]
+
+例子：如果有一组数据是这样存储的：{1,2,3,4,5,6,7} ,它们的内存是连续存放的在数据结构中被称为顺序表
+
+但是如果有一组很乱的数据：
+
+![](https://i.bmp.ovh/imgs/2021/12/4aa80f84d974be32.png)
+
+~~~c
+//结构体的自引用
+struct s {
+	char a;
+	//struct s s1;// 错误!!!!
+	struct s *s1;
+};
+//typedef struct b1 {
+//	int age;
+//	node* next;
+//}node; // 不行错误！！！！
+
+
+//正确做法：
+typedef struct b2 {
+	int age;
+	struct node* next;
+
+}node;
+
+int main()
+{
+	
+	return 0;
+}
+~~~
+
+### 结构体内存对齐
+
+了解了结构体的基本使用，在深入探讨一个问题：计算结构体的大小？
+
+结构体的对齐规则：
+
+1. 第一个成员在与结构体偏移量为0 的地址处
+2. 其他成员变量要对齐到某个数字（对齐数）的整数倍的地址处
+   - 对齐数 = 编译器默认对齐数和该成员对比取其**较小值**作为该数对齐数
+   - VS默认对齐数是8
+   - Linux没有默认对齐这个概念，成员自身大小就是对齐数
+3. 如果嵌套了结构体的情况，嵌套的结构体对齐到自己的最大对齐数的整数倍处，结构体的整体大小就是所有最大对齐数（含嵌套结构体的对齐数）的整数倍。（也就是嵌套结构体内最大对齐数的整倍数）
+
+###### 练习1：
+
+~~~c
+struct S1
+{
+	char c1;
+	int i;
+	char c2;
+};
+printf("%d\n", sizeof(struct S1)); // 12
+~~~
+
+分析：
+
+![](https://i.bmp.ovh/imgs/2021/12/e46ec12256583dcc.png)
+
+###### 练习2：
+
+~~~c
+struct S2
+{
+char c1;
+char c2;
+int i;
+};
+printf("%d\n", sizeof(struct S2)); //8
+~~~
+
+分析：
+
+![image-20211216122431089](C:\Users\admin颜云\AppData\Roaming\Typora\typora-user-images\image-20211216122431089.png)
+
+###### 练习3：
+
+~~~c
+struct S3
+{
+	double d;
+	char c;
+	int i;
+};
+printf("%d\n", sizeof(struct S3)); // 16
+~~~
+
+分析：
+
+![](https://i.bmp.ovh/imgs/2021/12/027689aa58247b11.png)
+
+###### 练习4结构体嵌套问题：
+
+~~~c
+//练习4-结构体嵌套问题
+struct S4
+{
+	char c1;
+	struct S3 s3;
+	double d;
+};
+printf("%d\n", sizeof(struct S4)); // 32
+~~~
+
+分析：
+
+![image-20211216122702722](C:\Users\admin颜云\AppData\Roaming\Typora\typora-user-images\image-20211216122702722.png)
+
+
+
+####  为什么存在结构体对齐
+
+`大部分的参考资料都是如是说的：`
+
+1. 平台原因(移植原因)：
+   - 不是所有的硬件平台都能访问任意地址上的任意数据的；某些硬件平台只能在某些地址处取某些特定类型的数据，否则抛出硬件异常。
+2. 性能原因：
+   - 数据结构(尤其是栈)应该尽可能地在自然边界上对齐。原因在于，为了访问未对齐的内存，处理器需要作两次内存访问；而对齐的内存访问仅需要一次访问。
+
+总体来说：结构体的内存对齐是拿空间来换取时间的做法。
+
+###### 在设计结构体的时候，如何做到既要满足对齐，又要节省空间？
+
+- 让占用空间小的成员尽量集中在一起。
+- 比如结构体的第一个成员是char，第二个成员是int，第三个成员是char，我们应该把占用空间小的成员集中在一起。char、char、int
+  - 会发现这些不同类型，相同个数的元素，位置不同，占用的空间大小也不同
+
+###### 修改默认对齐数
+
+VS下面的默认对齐数是8，我们是来修改这个默认对齐数
+
+通过`#pargam`这个预处理指令，可以改变默认对齐数
+
+~~~c
+#include<stdio.h>
+
+#pragma pack(2) // 设置默认对齐数
+struct S1
+{
+	char c1;
+	int i;
+	char c2;  
+};
+#pragma pack()// 取消设置默认对齐数。
+int main()
+{
+	printf("%d ",  sizeof(struct S1)); // 修改默认对齐为2的时候 = 8
+    printf("%d ",  sizeof(struct S1)); // 修改默认对齐为4的时候 = 12
+	return 0;
+}
+~~~
+
+![](https://i.bmp.ovh/imgs/2021/12/e791da28e8ea1a36.png)
 
