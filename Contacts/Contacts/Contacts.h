@@ -5,6 +5,8 @@
 #define MAX_SEX 5
 #define MAX_PHONE 12
 #define MAX_ADDER 20
+#define DEF_Person 3 // 默认能存三个联系人
+#define INCREASE 2 //每次增容2个联系人
 //定义通讯录
 //通讯录
 typedef struct PersonInfo{
@@ -16,9 +18,17 @@ typedef struct PersonInfo{
 	int sz;
 }PersonInfo;
 
+//静态版本
+//typedef struct Contacts {
+//	PersonInfo data[MAX];
+//	int sz;
+//}contacts;
+
+//动态版本
 typedef struct Contacts {
-	PersonInfo data[MAX];
-	int sz;
+	PersonInfo* data;
+	int sz; 
+	int capacity; // 容量
 }contacts;
 
 
@@ -41,3 +51,5 @@ void searchContact(contacts * con);
 //修改联系人
 void modifyContact(contacts * con);
 
+//销毁通讯录
+void destroyContact(contacts * con);

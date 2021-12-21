@@ -1,20 +1,71 @@
 #define _CRT_SECURE_NO_WARNINGS 
 #include "Contacts.h"
 
-//初始化通讯录
+//初始化通讯录  静态版本
+//void InitContacts(contacts * con)
+//{
+//	//memset(con, 0, sizeof(contacts));
+//	memset(con->data, 0, sizeof(con->data));
+//	con->sz = 0;
+//}
+
+//初始化通讯录  动态版本
 void InitContacts(contacts * con)
 {
-	memset(con, 0, sizeof(contacts));
+	//默认可以存放三个联系人
+	con->data = (PersonInfo *)malloc(DEF_Person*sizeof(PersonInfo));
+	if (con->data == NULL)
+	{
+		perror("InitContacts");
+		return;
+	}
+	con->capacity = DEF_Person;
+	con->sz = 0;
 }
 
 
-//添加联系人
+//添加联系人  静态版本
+//void addContact(contacts * con)
+//{
+//	//printf("姓名  年龄  性别  电话  地址\n"); 
+//	printf("姓名>:");
+//	scanf("%s", con->data[con->sz].name);
+//	
+//	printf("年龄>:");
+//	scanf("%d", &(con->data[con->sz].age));
+//	printf("性别>:");
+//	scanf("%s", con->data[con->sz].sex);
+//	printf("电话>:");
+//	scanf("%s", con->data[con->sz].phone);
+//	printf("地址>:");
+//	scanf("%s", con->data[con->sz].addr);
+//	con->sz++;
+//	printf("添加成功\n");
+//}
+
+//添加联系人 动态版本
 void addContact(contacts * con)
 {
-	//printf("姓名  年龄  性别  电话  地址\n"); 
+	//容量满了要增容
+	if (con->sz == con->capacity)
+	{
+		PersonInfo *ptr = (PersonInfo *)realloc(con->data, (con->capacity + INCREASE)* sizeof(PersonInfo));
+		if (ptr != NULL)
+		{
+			con->data = ptr;
+			con->capacity += INCREASE;
+			printf("增容成功\n");
+		}
+		else
+		{
+			perror("addContact");
+			printf("增容失败\n");
+			return;
+		}
+	}
 	printf("姓名>:");
 	scanf("%s", con->data[con->sz].name);
-	
+
 	printf("年龄>:");
 	scanf("%d", &(con->data[con->sz].age));
 	printf("性别>:");
@@ -151,4 +202,13 @@ void modifyContact(contacts * con)
 	{
 		printf("没有找到这个联系人\n");
 	}
+}
+
+//销毁通讯录
+void destroyContact(contacts * con)
+{
+	free(con->data);// 释放这个动态开辟的内容
+	con->data = NULL;
+	con->sz = 0;
+	con->capacity = 0;
 }
