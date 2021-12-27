@@ -4026,7 +4026,7 @@ int main()
 
 ###### 为什么使用枚举？
 
-可以使用`#defined`定义常量，为什么非要使用枚举？
+可以使用`#define`定义常量，为什么非要使用枚举？
 
 ###### 枚举的优点：
 
@@ -4785,11 +4785,799 @@ int main
 | 字符输入函数   | fgetc   | 所有输入流 |
 | 字符输出函数   | fputc   | 所有输出流 |
 | 文本行输入函数 | fgets   | 所有输入流 |
-| 文本行输出函数 | puts    | 所有输出流 |
+| 文本行输出函数 | fputs   | 所有输出流 |
 | 格式化输入函数 | fscanf  | 所有输入流 |
 | 格式化输出函数 | fprintf | 所有输入流 |
 | 二进制输入     | fread   | 文件       |
 | 二进制输出     | fwrite  | 文件       |
+
+###### fputc()
+
+`int fputc(int c,FILE* stream);`
+
+作用：Writes a character to a stream (**fputc**, **fputwc**) or to **stdout**  (**_fputchar**, **_fputwchar**). （将一个字符写入一个流）
+
+###### 流的概念
+
+![image-20211223203710668](C:\Users\admin颜云\AppData\Roaming\Typora\typora-user-images\image-20211223203710668.png)
+
+不需要关注流是怎么操作的。
+
+C语言程序只要运行起来，就默认打开了3个流：
+
+- stdin —— 标准输入流 - 键盘
+- stdout —— 标准输入流 - 屏幕
+- sterr —— 标准错误流 - 屏幕
+
+~~~c
+FILE * pFile;
+	//打开文件
+	pFile = fopen("test.txt", "w");
+	//文件操作
+	if (pFile != NULL)
+	{
+		//写入 pFile这个文件流
+		fputc("z", pFile);
+		fputc("q", pFile);
+		fputc("h", pFile);
+		//关闭文件
+		fclose(pFile);
+	}
+~~~
+
+~~~c
+	//一行读
+	//FILE * pf = fopen("test.dat", "r");
+	//if (pf == NULL)
+	//{
+	//	perror("fopen");
+	//	return 1;
+	//}
+	//int ret = ret = fputs("nihaoa\n", stdout);
+
+
+	//一行写
+	FILE * pf = fopen("test.dat", "w");
+	if (pf == NULL)
+	{
+		perror("fopen");
+		return 1;
+	}
+	fputs("hhhhh\n", pf); // 打开test.dat 会发现写入了hhhhh
+	fputs("wwwwww", pf); // 如果写入的文件需要换行加 \0
+~~~
+
+###### fscanf()
+
+`int fscanf(FILE* stream,const char* format [, argument]...);`
+
+###### fprintf()
+
+`int fprintf(FILE* stream,const char* format [, argument]...);`
+
+~~~c
+	//fscanf&&fprintf
+	//struct S s = { "welcome", 10, 3.333333 };
+	struct S s = {0};
+	FILE * pf = fopen("test.dat", "r");
+	//FILE * pf = fopen("test.dat", "w");
+
+	if (pf == NULL)
+	{
+		perror("fopen");
+		return 1;
+	}
+
+	//写入数据
+	//fprintf(pf, "%s %d %f", s.ch, &(s.a), &(s.b));
+
+	//读数据
+	//fscanf(pf, "%s %d %f", s.ch, &(s.a), &(s.b));
+
+
+	fscanf(pf, "%s %d %f", s.ch, &(s.a), &(s.b));
+	fprintf(stdout, "%s %d %f", s.ch, &(s.a), &(s.b));
+~~~
+
+###### fwrite()
+
+C 库函数 **size_t fwrite(const void \*ptr, size_t size, size_t nmemb, FILE \*stream)** 把 **ptr** 所指向的数组中的数据写入到给定流 **stream** 中。
+
+- **ptr** -- 这是指向要被写入的元素数组的指针。
+- **size** -- 这是要被写入的每个元素的大小，以字节为单位。
+- **nmemb** -- 这是元素的个数，每个元素的大小为 size 字节。
+- **stream** -- 这是指向 FILE 对象的指针，该 FILE 对象指定了一个输出流。
+
+**返回值：**如果成功，该函数返回一个 size_t 对象，表示元素的总数，该对象是一个整型数据类型。如果该数字与 nmemb 参数不同，则会显示一个错误。
+
+###### fread()
+
+C 库函数 **size_t fread(void \*ptr, size_t size, size_t nmemb, FILE \*stream)** 从给定流 **stream** 读取数据到 **ptr** 所指向的数组中。
+
+- **ptr** -- 这是指向带有最小尺寸 *size\*nmemb* 字节的内存块的指针。
+- **size** -- 这是要读取的每个元素的大小，以字节为单位。
+- **nmemb** -- 这是元素的个数，每个元素的大小为 size 字节。
+- **stream** -- 这是指向 FILE 对象的指针，该 FILE 对象指定了一个输入流。
+
+**返回值：**成功读取的元素总数会以 size_t 对象返回，size_t 对象是一个整型数据类型。如果总数与 nmemb 参数不同，则可能发生了一个错误或者到达了文件末尾。
+
+~~~c
+char ch[] = { "abcdef" };
+char ch2[16] = { 0 };
+//fwrite 写文件
+//FILE* pf = fopen("test.dat", "wb");
+FILE* pf = fopen("test.dat", "rb");
+//fwrite(ch,sizeof(ch),1,pf);
+
+//fread 读文件
+fread(ch2,sizeof(ch2),1,pf);
+printf("%s", ch2);
+fclose(pf);
+~~~
+
+### 对比一组函数
+
+scanf/fscanf/sscanf
+
+pirntf/fprintf/sprintf
+
+- scanf ：针对标准输入的格式化的输入语句 - stdin
+- fscanf：针对所有输入流的格式化的输入语句 - stdin/文件
+- sscanf：从一个字符串中读取一个格式化的数据
+- printf：针对标准输出的格式化输出语句 - stdout
+- fprintf：针对所有输出流的格式化输出语句 - stdout/文件
+- sprintf：把一个格式化的数据，转换称字符串
+
+### 文件的随机读写
+
+###### fseek()
+
+`int fseek ( FILE * stream, long int offset, int origin );`
+
+根据文件指针的位置和偏移量来定位文件指针。(将文件指针移动到指定位置。)
+
+- origin 
+  - **SEEK_CUR**  从文件指针的当前位置
+  - **SEEK_END** 文件的末尾
+  - **SEEK_SET**  文件指针的起始位置
+
+~~~c
+int main()
+{
+    	FILE* pf = fopen("test.dat","r");
+	int ret = 0;
+	if (pf != NULL)
+	{
+		//假如test.dat里面时abcdef
+		ret = fgetc(pf);//a
+		printf("%c ", ret); 
+
+		ret = fgetc(pf); //b
+		printf("%c ", ret);
+
+		fseek(pf,2,SEEK_CUR); //e  正数后移偏移两个字节，反之前移
+		ret = fgetc(pf);
+		printf("%c ", ret);
+			
+		fseek(pf, 2, SEEK_SET);  // 起始位置后移
+		ret = fgetc(pf);
+		printf("%c ", ret);
+        
+        //ftell
+		fseek(pf,5,SEEK_SET);
+		ret = fgetc(pf);
+		printf("%c ", ret); 
+
+		int location = ftell(pf);
+		printf("%d ", location);
+        
+        //rewind
+		rewind(pf);
+		ret = fgetc(pf);
+		printf("%c", ret);
+	}
+    return 0;
+}
+~~~
+
+###### ftell()
+
+`long int ftell ( FILE * stream );`
+
+返回文件指针相对起始位置的偏移量（比如你不知道后移了多少用ftell就知道起始位置后移了多少）
+
+该函数返回位置标识符的当前值
+
+###### rewind()
+
+`void rewind ( FILE * stream );`
+
+让文件指针重新定义到文件的开头
+
+### 文件读取结束的判定feof()
+
+**被错误使用的feof**
+
+牢记 : 在文件读取过程中，不能用feof函数的返回值直接用来判断文件的是否结束。而是应用于**当文件读取结束的时候，判断是读取失败结束，还是遇到文件尾结束。**
+
+1. 文本文件读取是否结束，判断返回值是否为EOF(fgetc)，或者NULL(fgets)
+   例如︰
+   -  fgetc判断是否为EOF.
+   -  fgets判断返回值是否为NULL
+2. 二进制文件的读取结束判断，判断返回值是否小于实际要读的个数。
+
+- fread判断返回值是否小于实际要读的个数。 fgetc函数在读取结束的时候，会返回EOF 正常读取的时候，返回的是字符的AscII码值
+- fgets函数在读取结束的时候，会返回NULL 正常读取的是时候，返回存放字符串的空间起始地址。
+- fread函数在读取的时候，返回的是实际读取到的完整元素的个数，如果发现读取到的完整元素的个数小于实际要读取（指定要读取）的个数，这就是最后一次读取了。
+
+###### feof和ferror
+
+一、文件结束检测函数feof函数调用格式： feof(文件指针)；
+功能：判断文件是否处于文件结束位置，如文件结束，则返回值为1，否则为0。
+
+二、读写文件出错检测函数ferror函数调用格式： ferror(文件指针)；
+功能：检查文件在用各种输入输出函数进行读写时是否出错。 如ferror返回值为0表示未出错，否则表示有错。
+
+~~~c
+int main()
+{
+	//文件读取结束的标志
+	//例如：要将test.dat 的内容复制到test2.dat中
+	FILE * fread = fopen("test.dat", "r");
+
+	if (fread == NULL)
+	{
+		perror("fread");
+		fclose(fread);
+		fread = NULL;
+		return 1;
+	}
+
+	if (feof(fread))
+	{
+		printf("遇到文件结束标准，正确结束\n");
+	}
+	else if (ferror(fread))
+	{
+		printf("文件读取错误\n");
+	}
+
+	//正常 
+	FILE * fwrite = fopen("test2.dat", "w");
+	int ret = 0;
+	while ((ret = fgetc(fread)) != EOF)
+	{
+		//写入test2.dat
+		fputc(ret, fwrite);
+	}
+	return 0;
+}
+~~~
+
+
+
+### 文本文件和二进制文件
+
+根据数据的组织形式，数据文件被称为**文本文件**和**二进制文件。**
+
+1. 数据在内存中以二进制的形式存储，如果不加转换的输出到外存，就是**二进制文件**
+2. 如果要求在外存上以ASCII码的形式存储，则需要在存储前转换。以ASCII字符的形式存储的文件就是文
+   本文件
+
+###### 一个数据在文件中时怎么存储的呢？
+
+字符一律以ASCII形式存储，数值型数据既可以用ASCII形式存储，也可以使用二进制形式存储
+
+如有整数10000，如果以ASCII码的形式输出到磁盘，则磁盘中占用5个字节（每个字符一个字节），而二进制形式输出，则在磁盘上只占4个字节（VS2013测试）。
+
+### 文件缓冲区
+
+ANSIC 标准采用“缓冲文件系统”处理的数据文件的，所谓缓冲文件系统是指**系统自动地在内存中为程序**
+**中每一个正在使用的文件开辟一块“文件缓冲区”**。从内存向磁盘输出数据会先送到内存中的缓冲区，**装**
+**满缓冲区后才一起送到磁盘上**。如果从磁盘向计算机读入数据，则从磁盘文件中读取数据输入到内存缓
+冲区（充满缓冲区），然后再从缓冲区逐个地将数据送到程序数据区（程序变量等）。缓冲区的大小根
+据C编译系统决定的
+
+举个例子就是：台上有一个老师在讲课，如果有学生不停的在提问，那么就会影响课程的进展，这课就没法上了，此时如果说，每个学生要攒够10个问题再向老师提问。这样就有效的不会影响课程进展。
+
+![](https://i.bmp.ovh/imgs/2021/12/5e38a545ae120222.png)
+
+
+
+###### 使用fflush()和不使用fflush演示
+
+fflush() 是一个刷新流 stream 的输出缓冲区。
+
+~~~c
+#include<Windows.h>
+int main()
+{
+	//文件缓冲区
+	FILE * pf = fopen("demo.dat", "w");
+	if (pf == NULL)
+	{
+		perror("fopen");
+		fclose(pf);
+		pf = NULL;
+	}
+	fputs("zqh", pf);
+	printf("睡眠10秒，此时点击demo.dat会发现没有内容\n");
+	Sleep(10000);
+	fflush(pf); // 刷新内存缓冲区
+	printf("再次程序睡眠10秒（相当于程序停在那里）,demo.dat里面就有内容了\n");
+	Sleep(10000);
+	fclose(pf); // fclose在关闭文件的时候，也会刷新缓冲区
+
+	return 0;
+}
+~~~
+
+这里可以得出一个结论:因为有缓冲区的存在，C语言在操作文件的时候，需要做刷新缓冲区或者在文件操作结束的时候关闭文件。如果不做，可能导致读写文件的问题
+
+**注意：在使用fclose关闭文件的时候也会刷新文件缓冲区。**
+
+## 程序环境和预处理
+
+### 编译和链接
+
+在ANSI C的任何一种实现中，存在两个不同的环境。
+
+1. 第一种是翻译环境，在这个环境中源代码被转换为可执行的指令
+2. 第二种是执行环境，它用于实际执行的代码
+
+![](https://i.bmp.ovh/imgs/2021/12/b725c52f53c1da45.png)
+
+源文件：test.c
+
+目标文件：由源文件编译后生成的.obj文件（windows下）
+
+- 组成一个程序的每个源文件通过编译过程分别转换成目标代码（object code）
+- 每个目标文件由链接器（linker）捆绑在一起，形成一个单一而完整的可执行程序
+- 链接器同时也会引入标准C函数库中任何被该程序所用到的函数，而且它可以搜索程序员个人的程序库，将其需要的函数也链接到程序中
+
+~~~c
+#include<stdio.h>
+#define MAX 100
+int val = 200;
+int main()
+{
+    int a = 10;
+	printf("你好！");
+    return 0;
+}
+    
+~~~
+
+![](https://i.bmp.ovh/imgs/2021/12/a461bb66ad398df9.png)
+
+
+
+上面的代码在linux上运行分别执行：
+
+1. 1.预处理：gcc - test -E 预处理后就停下来。查看预处理后的文件变化 结果保存在 test.i
+2. 编译 ：gcc test.i -S 编译完成就停下来结果保存在 test.s中 
+3. 汇编：gcc test.s -c 汇编完成就停下来结果保存在test.o中
+
+linux里使用vim编辑器，有关vim编辑器的学习资料：
+
+- 简明VIM练级攻略：
+  https://coolshell.cn/articles/5426.html
+- 给程序员的VIM速查卡
+  https://coolshell.cn/articles/5479.html
+
+### 运行环境
+
+程序执行的过程：
+
+1. 程序必须载入内存中。在有操作系统的环境中：一般这个由操作系统完成。在独立的环境中，程序
+的载入必须由手工安排，也可能是通过可执行代码置入只读内存来完成。
+2. 程序的执行便开始。接着便调用main函数。
+3. 开始执行程序代码。这个时候程序将使用一个运行时**堆栈**（stack），存储函数的局部变量和返回
+  地址。程序同时也可以使用静态（static）内存，存储于静态内存中的变量在程序的整个执行过程
+  一直保留他们的值。
+4. 终止程序。正常终止main函数；也有可能是意外终止
+
+堆栈 一般指栈空间，堆就是堆。
+
+推荐一本书：《程序员的自我修养》
+
+### 预处理
+
+##### 预定义符号
+
+~~~c
+__FILE__  // 文件的当前路径
+__DATE__  // 文件被编译的日期
+__TIME__  // 文件被编译的时间
+__LINE__  // 文件的行号
+__STDC__  // 如果编译器遵循ANSI C，其值为1，否则未定义
+
+~~~
+
+这些预定义符号都是语言内置的。
+
+
+
+~~~c
+
+#define _CRT_SECURE_NO_WARNINGS
+
+int main()
+{
+	printf("%s\n", __FILE__); // 当前文件源文件的路径
+	printf("%d\n", __LINE__); // 文件行号
+	printf("%s\n", __DATE__); // 文件被编译的日期
+	printf("%s\n", __TIME__); // 文件被编译的时间
+	//printf("%d\n", __STDC__); // 如果编译器遵循ANSI C，其值为1，否则未定义
+	return 0;
+}
+~~~
+
+##### #define
+
+#define 定义标识符
+
+语法：`#define name content`
+
+~~~c
+//1.
+#define DATA 100
+//2. 
+#define reg register // reg就是register 相当于创建一个别名
+//3.
+#define for_ever for(;;)
+//4. 如果定义的内容太对需要换行，那么每行的最后（除了最后一行）都应该加上一个反斜杠（续行符）
+#define DEBUG_PRINT printf("hh,\
+							haha, \
+							heihei")
+
+int main()
+{
+	reg int a = 10;
+	for_ever; // 死循环
+
+	return 0;
+}
+~~~
+
+在使用#define定义标识符的时候，后面要不要加上分号;  ？答案是不要，因为#define是在预处理阶段完成替换操作的，如果添加分号，反而容易导致错误。如：
+
+~~~c
+#define TEST 2;
+int main()
+{
+	int a = 10;
+	if (a)
+		a = TEST; 
+    // 预处理后是这样：
+    // a = 2;; 就是两条语句了，if出现不匹配 
+	else
+		a = 0;
+	return 0;
+}
+~~~
+
+##### #define定义宏
+
+#define 机制包括了一个规定，允许把参数替换到文本中，这种实现通常称为宏（macro）或定
+义宏（define macro）
+
+宏的声明：
+
+~~~c
+#define MAX(x) x*x
+#define MIN(y) y*y  // 8+1*8+1  
+#define MIN(y) (y)*(y) 
+int main()
+{
+	//参数列表的左括号必须与name紧邻。如果两者之间有任何空白存在，参数列表就会被解释为stuff的一部分。
+	printf("%d\n", MAX(5));
+	//注意：
+// 这把8+1传入它不会进行运算，进行替换，然后根据优先级进行运算，只要理解#define的本质是替换那么问题就不大
+	printf("%d\n", MIN(8+1)); 
+
+	printf("%d\n", MIN(8 + 1)); // 不要吝啬括号
+	return 0;
+}
+~~~
+
+##### #define 替换规则
+
+在程序中扩展#define定义符号和宏时，需要涉及几个步骤
+
+1. 在调用宏时，首先对参数进行检查，看看是否包含任何由#define定义的符号。如果是，它们首先
+被替换。
+2. 替换文本随后被插入到程序中原来文本的位置。对于宏，参数名被他们的值替换
+3. 最后，再次对结果文件进行扫描，看看它是否包含任何由#define定义的符号。如果是，就重复上
+  述处理过程
+
+注意：
+
+1. 宏参数和#define 定义中可以出现其他#define定义的变量。但是对于宏，不能出现递归
+2.  当预处理器搜索#define定义的符号的时候，字符串常量的内容并不被搜索。
+
+##### #和##
+
+如何把参数插入到字符串中？
+
+使用#
+
+~~~c
+#define PRINT(a) printf("the value of "#a" is %d\n",a)
+int main()
+{	
+	//例如：the value of xx is %d  这里的xx是接收的参数字符， %d是这个参数打印类型
+	//输出：the value of a is 10
+	//使用#把参数插入字符串
+	int a = 10;
+	int b = 20;
+	int c = 30;
+	PRINT(a);
+	PRINT(b);
+	PRINT(c);
+	return 0;
+}
+~~~
+
+这里**只有当字符串作为宏参数的时候**才可以把字符串放在字符串中。
+
+###### ##的作用
+
+##可以把位于它两边的符号合成一个符号。它允许宏定义从分离的文本片段创建标识符。
+
+~~~c
+#define PRINTF(x,y) x##y 
+int  main()
+{
+	int vai00 = 13;
+	printf("%d", PRINTF(vai, 00));
+	return 0;
+}
+~~~
+
+这样的连接必须产生一个合法的标识符。否则其结果就是未定义的.
+
+##### 宏和函数对比
+
+宏通常被应用于执行简单的运算。比如在两个数中找出较大的一个
+
+1. 用于调用函数和从函数返回的代码可能比实际执行这个小型计算工作所需要的时间更多。所以宏比
+函数在程序的规模和速度方面更胜一筹。
+2. 更为重要的是函数的参数必须声明为特定的类型。所以函数只能在类型合适的表达式上使用。反之
+  这个宏怎可以适用于整形、长整型、浮点型等可以用于>来比较的类型。宏是类型无关的
+
+当然和宏相比函数也有劣势的地方:
+
+1. 每次使用宏的时候，一份宏定义的代码将插入到程序中。除非宏比较短，否则可能大幅度增加程序
+   的长度
+2. 宏是没法调试的
+3. 宏由于类型无关，也就不够严谨
+4. 宏可能会带来运算符优先级的问题，导致程容易出现错
+
+宏有时候可以做函数做不到的事情。比如：宏的参数可以出现类型，但是函数做不到
+
+##### 命名约定
+
+一般来讲函数的宏的使用语法很相似。所以语言本身没法帮我们区分二者。那我们平时的一个习惯是：
+
+- 把宏名全部大写
+- 函数名不要全部大写
+
+##### #undef
+
+移除#define定义的符号和宏
+
+~~~c
+#define MAX 100
+int main()
+{
+
+	printf("%d\n", MAX);
+	#undef MAX
+	printf("%d\n", MAX); // 这里报错，因为上面移除了MAX，因此MAX未定义
+	return 0;
+}
+~~~
+
+##### 命令行定义
+
+许多C 的编译器提供了一种能力，允许在命令行中定义符号。用于启动编译过程。
+
+例如：当我们根据同一个源文件要编译出不同的一个程序的不同版本的时候，这个特性有点用处。（假
+定某个程序中声明了一个某个长度的数组，如果机器内存有限，我们需要一个很小的数组，但是另外一
+个机器内存大写，我们需要一个数组能够大写。
+
+编译指令：
+
+`gcc -D M=10 test.c`
+
+只能在gcc编译器下，linux操作系统下方便演示。
+
+##### 条件编译
+
+在编译一个程序的时候我们如果要将一条语句（一组语句）编译或者放弃是很方便的。因为我们有条件
+编译指令
+
+比如说：调试性的代码，删除可惜，保留又碍事，所以我们可以选择性的编译
+
+~~~c
+#define __DEBUG__ 
+
+#define MIN  0
+#define REMOVE 1
+int main()
+{
+	//1.
+	#ifdef __DEBUG__
+	printf("只要定义了 __DEBUG__ 就能编译这条语句\n");
+	#endif
+
+	//2.多个分支的条件编译
+	
+	//下面的条件必须是常量表达式
+#	if MIN
+	printf("你好\n");
+	#elif  REMOVE
+	printf("我好\n");
+	#else
+	printf("他好\n");
+	#endif
+
+	//嵌套指令...
+	return 0;
+}
+~~~
+
+这种条件编译的写法在库函数里面有很多。
+
+##### 文件包含
+
+我们已经知道， #include 指令可以使另外一个文件被编译。就像它实际出现于 #include 指令的地方一样。
+
+这种替换的方式很简单：
+
+预处理器先删除这条指令，并用包含文件的内容替换。
+
+这样一个源文件被包含10次，那就实际被编译10次。
+
+###### 头文件包含的方式：
+
+1.本地文件包含
+
+`#include "fileName"`
+
+2.库文件包含
+
+`#include<stdio.h>`
+
+查找策略：先在源文件目录下查找，如果没有找到该文件，编译器就像查找库函数一样在标准位置查找头文件，如果找不到就提示编译错误。
+
+Linux环境的标准头文件的路径：
+
+`/usr/include`
+
+VS环境的标准头文件的路径：
+
+`E:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include`
+
+具体还得按照自己的路径去找。
+
+###### 嵌套文件包含
+
+如果有多个文件同时需要包含同一个库文件，就会文件中出现大量相同的代码。如何解决：
+
+1.条件编译
+
+~~~c
+#ifndef __TEST_H__
+#define __TEST_H__
+//头文件的内容
+#endif  //__TEST_H__
+~~~
+
+2.#pragma once
+
+##### 其他预处理指令
+
+~~~c
+#error
+#pragma
+#line
+.....
+之前用过#pragma pack() 修改结构体默认对齐数
+~~~
+
+完结！！！
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
